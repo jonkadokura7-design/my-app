@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ メンズ美容診断</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ================================================= */
+        /* == style.css の内容 == */
+        /* ================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #4CAF50; /* 緑系 */
+            --secondary-color: #8BC34A; /* 明るい緑 */
+            --accent-color: #FFC107; /* アクセントの黄色 */
+            --background-light: #F8F9FA;
+            --card-background: #FFFFFF;
+            --text-dark: #212529;
+            --text-light: #6C757D;
+            --border-light: #DEE2E6;
+            --shadow-soft: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-soft);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* --- ヘッダー --- */
+        .header h1 {
+            font-size: 2.2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin-bottom: 30px;
+            color: var(--text-light);
+        }
+
+        /* --- 各スクリーン (診断開始、質問、結果) --- */
+        .screen {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .screen.hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        /* --- ボタン共通スタイル --- */
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* --- 質問画面 --- */
+        .question-container {
+            background-color: var(--background-light);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1em;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            color: var(--text-dark);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 選択肢のボタン */
+        .option-btn {
+            background-color: var(--card-background);
+            color: var(--text-dark);
+            border: 1px solid var(--border-light);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-btn:hover {
+            background-color: #E9ECEF;
+            border-color: var(--primary-color);
+        }
+
+        .option-btn.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- 結果画面 --- */
+        .result-title {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .recommendation-card {
+            background-color: #E8F5E9; /* 明るい緑背景 */
+            border: 1px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: left;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #product-name {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        #product-description {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .product-link {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--text-dark);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background-color 0.3s;
+        }
+
+        .product-link:hover {
+            background-color: #FFD54F;
+        }
+
+        /* --- ユーティリティ/エラー --- */
+        .hidden {
+            display: none;
+        }
+
+        .error-message {
+            color: #DC3545; /* 赤 */
+            margin-top: 20px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>👨‍🦱 メンズ美容診断</h1>
+            <p>簡単な5つの質問に答えて、あなたにぴったりのスキンケアを見つけましょう。</p>
+        </header>
+
+        <div id="start-screen" class="screen">
+            <button id="start-btn">診断を始める</button>
+        </div>
+
+        <div id="quiz-screen" class="screen hidden">
+            <div class="question-container">
+                <p class="question-number" id="question-number"></p>
+                <h2 class="question-text" id="question-text"></h2>
+                <div class="options-container" id="options-container">
+                </div>
+            </div>
+            <button id="next-btn" class="hidden">次へ</button>
+        </div>
+
+        <div id="result-screen" class="screen hidden">
+            <h2 class="result-title">✨ あなたにおすすめのスキンケア</h2>
+            <div class="recommendation-card" id="recommendation-card">
+                <h3 id="product-name"></h3>
+                <p id="product-description"></p>
+                <a href="#" id="product-link" target="_blank" class="product-link hidden">商品を見る</a>
+            </div>
+            <button id="restart-btn">もう一度診断する</button>
+        </div>
+
+        <p class="error-message" id="error-message" aria-live="polite"></p>
+    </div>
+
+    <script>
+        // =================================================
+        // == script.js の内容 (動作修正済み) ==
+        // =================================================
+
+        // --- 診断の質問と選択肢 ---
+        const questions = [
+            {
+                id: 1,
+                question: "あなたの肌質はどんなタイプですか？",
+                options: [
+                    { text: "Tゾーンはテカるけど、口元は乾燥しやすい（混合肌）", score: { moisture: 3, oiliness: 4, sensitivity: 2 } },
+                    { text: "洗顔後つっぱることが多く、カサつきやすい（乾燥肌）", score: { moisture: 5, oiliness: 1, sensitivity: 3 } },
+                    { text: "全体的にベタつきやすく、ニキビができやすい（脂性肌）", score: { moisture: 1, oiliness: 5, sensitivity: 2 } },
+                    { text: "特に問題はなく、比較的安定している（普通肌）", score: { moisture: 2, oiliness: 2, sensitivity: 1 } },
+                ]
+            },
+            {
+                id: 2,
+                question: "肌の悩みで最も気になることは何ですか？",
+                options: [
+                    { text: "乾燥、肌荒れ", score: { moisture: 5, sensitivity: 4 } },
+                    { text: "テカリ、毛穴の目立ち", score: { oiliness: 5, pore: 4 } },
+                    { text: "ニキビ、肌の赤み", score: { sensitivity: 5, acne: 4 } },
+                    { text: "ハリのなさ、エイジングサイン", score: { anti_aging: 5 } },
+                ]
+            },
+            {
+                id: 3,
+                question: "普段の洗顔後、肌はどのような状態になりますか？",
+                options: [
+                    { text: "つっぱる感じが強く、すぐに保湿したくなる", score: { moisture: 5 } },
+                    { text: "少しつっぱるが、すぐに気にならなくなる", score: { moisture: 3 } },
+                    { text: "特に変化はなく、さっぱりしている", score: { moisture: 1, oiliness: 1 } },
+                    { text: "ベタつきが残る感じがする", score: { oiliness: 3 } },
+                ]
+            },
+            {
+                id: 4,
+                question: "スキンケアにかける時間や手間についてどう思いますか？",
+                options: [
+                    { text: "時間をかけてしっかりケアしたい", score: { routine: 5 } },
+                    { text: "基本的なケアはしたいが、手間はかけたくない", score: { routine: 3 } },
+                    { text: "とにかく手軽に済ませたい", score: { routine: 1 } },
+                ]
+            },
+            {
+                id: 5,
+                question: "普段、紫外線を浴びる機会は多いですか？",
+                options: [
+                    { text: "毎日長時間浴びる（屋外での活動が多い）", score: { uv_care: 5, anti_aging: 3 } },
+                    { text: "たまに浴びる（通勤・通学程度）", score: { uv_care: 3 } },
+                    { text: "ほとんど浴びない（室内での活動がほとんど）", score: { uv_care: 1 } },
+                ]
+            }
+        ];
+
+        // --- スキンケア商品の推奨データ ---
+        const recommendations = [
+            {
+                id: "dry_sensitive",
+                name: "高保湿バリア強化セット",
+                description: "乾燥が特に気になる方や敏感肌の方に。セラミド配合で肌のバリア機能を高め、潤いをしっかり閉じ込めます。",
+                link: "https://example.com/dry_sensitive"
+            },
+            {
+                id: "oily_acne",
+                name: "テカリ・ニキビ対策クリアジェル",
+                description: "皮脂の過剰分泌を抑え、ニキビや毛穴の目立ちをケア。さっぱりとした使用感で肌を清潔に保ちます。",
+                link: "https://example.com/oily_acne"
+            },
+            {
+                id: "aging_care",
+                name: "ハリ・エイジングケア集中美容液",
+                description: "肌のハリ不足や小じわが気になる方に。レチノール誘導体やビタミンC誘導体で若々しい印象の肌へ導きます。",
+                link: "https://example.com/aging_care"
+            },
+            {
+                id: "basic_all_in_one",
+                name: "シンプルオールインワンジェル",
+                description: "手軽に基本的なスキンケアを済ませたい方に。化粧水・乳液・美容液の役割をこれ一本でカバーします。",
+                link: "https://example.com/basic_all_in_one"
+            },
+            {
+                id: "normal_balance",
+                name: "バランスケアローション",
+                description: "肌のバランスを整え、健康的な状態を維持したい方に。日々の肌ケアに最適な、汎用性の高いローションです。",
+                link: "https://example.com/normal_balance"
+            }
+        ];
+
+
+        // --- DOM要素の取得 ---
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        const startButton = document.getElementById('start-btn');
+        const questionNumberElement = document.getElementById('question-number');
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextButton = document.getElementById('next-btn');
+        const restartButton = document.getElementById('restart-btn');
+
+        const productNameElement = document.getElementById('product-name');
+        const productDescriptionElement = document.getElementById('product-description');
+        const productLinkElement = document.getElementById('product-link');
+        const errorMessageElement = document.getElementById('error-message');
+
+
+        let currentQuestionIndex = 0;
+        let userScores = {
+            moisture: 0, oiliness: 0, sensitivity: 0, pore: 0, acne: 0, anti_aging: 0, uv_care: 0, routine: 0
+        };
+        let selectedOption = null; 
+
+
+        // --- 診断開始ロジック ---
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            currentQuestionIndex = 0;
+            resetScores();
+            loadQuestion();
+        }
+
+        // --- イベントリスナー設定 ---
+        // DOMContentLoadedを待つことで、startButtonが確実に存在してからイベントを設定します。
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初期表示
+            startScreen.classList.remove('hidden');
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            
+            // イベントリスナーの追加
+            startButton.addEventListener('click', startQuiz);
+
+            nextButton.addEventListener('click', () => {
+                if (selectedOption === null) {
+                    errorMessageElement.textContent = '選択肢を選んでください。';
+                    return;
+                }
+                errorMessageElement.textContent = ''; 
+
+                // スコアを加算
+                for (const key in selectedOption.score) {
+                    if (userScores.hasOwnProperty(key)) {
+                        userScores[key] += selectedOption.score[key];
+                    }
+                }
+
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    loadQuestion();
+                } else {
+                    displayResult();
+                }
+            });
+
+            restartButton.addEventListener('click', () => {
+                resultScreen.classList.add('hidden');
+                startScreen.classList.remove('hidden');
+                currentQuestionIndex = 0;
+                resetScores();
+                selectedOption = null;
+                nextButton.classList.add('hidden'); 
+            });
+        });
+
+
+        /**
+         * スコアをリセットする関数
+         */
+        function resetScores() {
+            for (const key in userScores) {
+                userScores[key] = 0;
+            }
+        }
+
+
+        /**
+         * 質問をロードして表示する関数
+         */
+        function loadQuestion() {
+            const questionData = questions[currentQuestionIndex];
+            questionNumberElement.textContent = `質問 ${currentQuestionIndex + 1} / ${questions.length}`;
+            questionTextElement.textContent = questionData.question;
+            optionsContainer.innerHTML = ''; 
+
+            selectedOption = null; 
+            nextButton.classList.add('hidden'); 
+
+            questionData.options.forEach(option => {
+                const button = document.createElement('button');
+                button.classList.add('option-btn');
+                button.textContent = option.text;
+                button.addEventListener('click', () => {
+                    selectOption(button, option);
+                });
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        /**
+         * 選択肢がクリックされた時の処理
+         */
+        function selectOption(clickedButton, optionData) {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            clickedButton.classList.add('selected');
+            selectedOption = optionData; 
+
+            // 「次へ」ボタンを表示
+            nextButton.classList.remove('hidden');
+        }
+
+
+        /**
+         * 結果を表示する関数
+         */
+        function displayResult() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            let recommendedProduct = recommendations[4]; // デフォルトは"normal_balance"
+
+            // スコアに基づいて最適な商品を判定
+            if (userScores.moisture >= 7 && userScores.oiliness <= 3) {
+                recommendedProduct = recommendations[0]; // dry_sensitive
+            } else if (userScores.oiliness >= 7 && userScores.moisture <= 3) {
+                recommendedProduct = recommendations[1]; // oily_acne
+            } else if (userScores.anti_aging >= 5) {
+                recommendedProduct = recommendations[2]; // aging_care
+            } else if (userScores.routine <= 2) {
+                recommendedProduct = recommendations[3]; // basic_all_in_one
+            } else {
+                recommendedProduct = recommendations[4]; // normal_balance
+            }
+
+
+            productNameElement.textContent = recommendedProduct.name;
+            productDescriptionElement.textContent = recommendedProduct.description;
+            productLinkElement.href = recommendedProduct.link;
+            productLinkElement.classList.remove('hidden'); 
+        }
+
+        // ページロード時の初期設定は、イベントリスナーブロック内で処理済み
+    </script>
+</body>
+</html>
