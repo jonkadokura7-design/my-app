@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 誕生日のインスピレーション</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* ================================================= */
+        /* == style.css の内容 (リッチデザイン) == */
+        /* ================================================= */
+
+        /* フォントの外部読み込みを削除し、システムフォントを使用することで表示エラーを回避 */
+        
+        :root {
+            --primary-color: #A9D4FF; /* 明るいブルー (アクセント) */
+            --secondary-color: #FFC0CB; /* ピンク (ホバー色) */
+            --background-blur: rgba(255, 255, 255, 0.4); /* カードの透明な背景 */
+            --text-dark: #333;
+            --shadow-light: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* フォントをシステム標準（丸ゴシック系）に変更 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            
+            /* リッチな背景の追加 */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:rgb(255,230,240);stop-opacity:1" /><stop offset="100%" style="stop-color:rgb(220,240,255);stop-opacity:1" /></linearGradient></defs><rect width="100" height="100" fill="url(%23g)"/></svg>');
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 抽象的な背景テクスチャの追加 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, var(--secondary-color) 0%, transparent 40%),
+                        radial-gradient(circle at bottom right, var(--primary-color) 0%, transparent 40%);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .container {
+            /* グラスモーフィズムの適用 */
+            background-color: var(--background-blur);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            
+            border-radius: 30px;
+            box-shadow: 0 10px 40px var(--shadow-light);
+            padding: 50px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        
+        /* --- ヘッダー --- */
+        .header h1 {
+            font-size: 2.8em;
+            color: var(--text-dark);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin-bottom: 35px;
+            color: #555;
+            font-weight: 400;
+        }
+
+        /* --- 入力セクション --- */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .input-section label {
+            font-weight: 700;
+            font-size: 1.1em;
+            text-align: left;
+            display: none; 
+        }
+
+        #birthday {
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        #generate-btn {
+            background: linear-gradient(45deg, var(--primary-color), #87CEFA); 
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+        }
+
+        #generate-btn:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0.95;
+        }
+
+        #generate-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* --- 名言カード --- */
+        .quote-card {
+            background-color: rgba(255, 255, 255, 0.8); 
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            border-left: 8px solid var(--primary-color); 
+            position: relative;
+            text-align: left;
+            opacity: 1; 
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            transform: translateY(0);
+        }
+
+        .quote-card:not(.hidden) {
+            animation: fadeInSlideUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quote-text {
+            font-size: 1.4em;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        .quote-author {
+            font-size: 1.1em;
+            font-weight: 700;
+            text-align: right;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        /* --- 挿絵アイコン --- */
+        .quote-icon-container {
+            position: absolute;
+            top: -25px; 
+            left: -25px; 
+            width: 60px;
+            height: 60px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 0 5px white, 0 5px 15px rgba(0, 0, 0, 0.2); 
+        }
+
+        #quote-icon {
+            font-size: 1.8em;
+            color: white;
+        }
+
+        /* --- ユーティリティ/エラー --- */
+        .hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        .error-message {
+            color: #d9534f; 
+            margin-top: 15px;
+            font-weight: 700;
+            background-color: rgba(255, 200, 200, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎂 あなたへのインスピレーション</h1>
+            <p>誕生日を入力して、偉人からの名言を受け取りましょう。</p>
+        </header>
+
+        <div class="input-section">
+            <label for="birthday">あなたの誕生日:</label>
+            <input type="date" id="birthday" required>
+            <button id="generate-btn">名言を受け取る</button>
+        </div>
+
+        <div class="quote-card hidden" id="quote-output">
+            <div class="quote-icon-container">
+                <i class="fas fa-magic" id="quote-icon"></i>
+            </div>
+            
+            <p class="quote-text" id="quote-text"></p>
+            <p class="quote-author" id="quote-author"></p>
+        </div>
+
+        <p class="error-message" id="error-message" aria-live="polite"></p>
+
+    </div>
+
+    <script>
+        // =================================================
+        // == script.js の内容 (JavaScript) ==
+        // =================================================
+
+        // 世界の偉人の名言データとテーマ
+        const quotes = [
+            { quote: "為せば成る、為さねば成らぬ何事も、成らぬは人の為さぬなりけり。", author: "上杉鷹山", theme: "Action" },
+            { quote: "人生とは、今日一日のことである。", author: "デール・カーネギー", theme: "Life" },
+            { quote: "成功とは、失敗から失敗へと、情熱を失わずに進む能力である。", author: "ウィンストン・チャーチル", theme: "Success" },
+            { quote: "幸福とは、健康と記憶力の悪さのことである。", author: "アルベルト・シュバイツァー", theme: "Health" },
+            { quote: "未来を予測する最善の方法は、それを創り出すことだ。", author: "ピーター・ドラッカー", theme: "Future" },
+            { quote: "星の光を見上げるたびに、私は希望を感じる。", author: "ネルソン・マンデラ", theme: "Hope" },
+            { quote: "偉大なことを成し遂げる唯一の方法は、自分のやっていることを愛することだ。", author: "スティーブ・ジョブズ", theme: "Passion" },
+            { quote: "知識は力なり。", author: "フランシス・ベーコン", theme: "Knowledge" },
+            { quote: "空想を抱きなさい。空想は、現実世界から新しい形を生み出す。", author: "トーマス・エジソン", theme: "Idea" },
+            { quote: "自分らしくあれ。他の誰かになろうとする必要はない。", author: "オスカー・ワイルド", theme: "Identity" },
+            { quote: "どこにいても、まず周りの世界に変化をもたらすことを考えなさい。", author: "マハトマ・ガンジー", theme: "Change" },
+        ];
+
+        // テーマとFont Awesomeアイコンの対応マップ
+        const themeIcons = {
+            "Action": "fa-running",      
+            "Life": "fa-seedling",       
+            "Success": "fa-trophy",      
+            "Health": "fa-heartbeat",    
+            "Future": "fa-rocket",       
+            "Hope": "fa-star",           
+            "Passion": "fa-fire",        
+            "Knowledge": "fa-book-open", 
+            "Idea": "fa-lightbulb",      
+            "Identity": "fa-user-circle",
+            "Change": "fa-globe",        
+            "Default": "fa-quote-left"   
+        };
+
+
+        // DOM要素の取得
+        const birthdayInput = document.getElementById('birthday');
+        const generateButton = document.getElementById('generate-btn');
+        const quoteOutput = document.getElementById('quote-output');
+        const quoteTextElement = document.getElementById('quote-text');
+        const quoteAuthorElement = document.getElementById('quote-author');
+        const quoteIconElement = document.getElementById('quote-icon'); 
+        const errorMessageElement = document.getElementById('error-message');
+
+
+        /**
+         * 名言をランダムで選択し、表示する関数
+         */
+        function generateQuote() {
+            const birthday = birthdayInput.value;
+
+            // 1. バリデーションチェック
+            if (!birthday) {
+                errorMessageElement.textContent = '🎂 誕生日を入力してください。';
+                quoteOutput.classList.add('hidden');
+                return;
+            }
+
+            errorMessageElement.textContent = '';
+
+            // 2. 乱数生成の基にするため、日付文字列を数値に変換
+            const dateParts = birthday.split('-');
+            const seed = parseInt(dateParts[1]) * 100 + parseInt(dateParts[2]);
+
+            // 3. 乱数に基づき名言を選ぶ
+            const randomIndex = seed % quotes.length;
+            const selectedQuote = quotes[randomIndex];
+
+            // 4. 結果の更新
+            // 古いアイコンクラスを全て削除
+            quoteIconElement.className = ''; 
+
+            // 新しいアイコンを設定
+            const iconClass = themeIcons[selectedQuote.theme] || themeIcons['Default'];
+            quoteIconElement.classList.add('fas', iconClass); 
+
+            // 名言の内容を更新
+            quoteTextElement.textContent = `"${selectedQuote.quote}"`;
+            quoteAuthorElement.textContent = `- ${selectedQuote.author}`;
+
+            // 5. アニメーション効果のために一度隠してから表示
+            quoteOutput.classList.add('hidden'); 
+            
+            setTimeout(() => {
+                quoteOutput.classList.remove('hidden'); 
+            }, 50); 
+        }
+
+        // イベントリスナーの追加
+        generateButton.addEventListener('click', generateQuote);
+
+        // (オプション) Enterキーでも実行できるようにする
+        birthdayInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                generateQuote();
+            }
+        });
+    </script>
+</body>
+</html>
